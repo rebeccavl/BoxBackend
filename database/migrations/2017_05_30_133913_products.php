@@ -20,7 +20,6 @@ class Products extends Migration
       $table->string('description');
       $table->integer('quantity');
       $table->string('name');
-      $table->integer('categoryID');
       $table->boolean('availability');
       $table->timestamps();
       });
