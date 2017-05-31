@@ -26,7 +26,7 @@ class OrdersController extends Controller
     return Response::json($order);
 
     $orders = Order::where("userID","=",$userID)
-    ->join("users",,"orders.userID","=","user.id")
+    ->join("users","orders.userID","=","user.id")
     ->join("products","orders.productID","=","products.id")
     ->select("orders.id","orders.amount","orders.totalPrice","user.name","products.name")
     ->orderBy("orders.id","desc")
@@ -39,7 +39,6 @@ class OrdersController extends Controller
   public function store(Request $request)
   {
     $rules=[
-      "userID" => "required",
       "productsID" => "required",
       "quantity" => "required",
       "totalPrice" => "required",
@@ -81,7 +80,6 @@ class OrdersController extends Controller
   public function update(Request $request)
   {
     $rules=[
-      "userID" => "required",
       "productsID" => "required",
       "quantity" => "required",
       "totalPrice" => "required",

@@ -104,7 +104,7 @@ class UsersController extends Controller
    {
      return Response::json(["error" => "You can't enter here."]);
    }
-   
+
    $user = User::find($user->id);
    return Response::json($user);
  }

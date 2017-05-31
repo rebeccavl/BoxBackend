@@ -48,7 +48,7 @@ class RolesController extends Controller
 
   $roles = new Role;
 
-  $roles->role = $request->input('role');
+  $roles->name = $request->input('role');
   $roles->save();
 
   return Response::json(["succes" => "Role successfully added."]);
@@ -76,7 +76,7 @@ class RolesController extends Controller
   }
 
     $role = Role::find($id);
-    $role->role = $request->input('role');
+    $role->name = $request->input('role');
     $role->save();
     return Response::json(["success"=>"Role Updated."]);
 
