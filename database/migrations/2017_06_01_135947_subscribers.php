@@ -18,7 +18,7 @@ class Subscribers extends Migration
           $table->string('firstName');
           $table->string('lastName');
           $table->string('email')->unique();
-          $table->boolean('unsubscribe');
+          $table->boolean('unsubscribe')->default(1);
           $table->timestamps();
         });
     }

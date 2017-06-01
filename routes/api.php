@@ -22,4 +22,8 @@ Route::post('updateProduct/{id}','ProductsController@update');
 Route::get('showProduct/{id}','ProductsController@show');
 Route::post('deleteProduct/{id}','ProductsController@destroy');
 
+Route::get('getSubscribers','SubscribersController@index');
+Route::post('storeSubscribers','SubscribersController@store');
+Route::post('deleteSubscribers/{id}','SubscribersController@destroy');
+
 Route::any('{path?}', 'MainController@index')->where("path", ".+");
