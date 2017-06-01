@@ -16,7 +16,7 @@ Route::post('deleteUser/{id}','UsersController@destroy');
 Route::post('storeOrder','OrdersController@store');
 Route::get('showOrder/{id}','OrdersController@show');
 Route::post('deleteOrder/{id}','OrdersController@destroy');
-
+//routes work
 Route::post('storeProduct','ProductsController@store');
 Route::post('updateProduct/{id}','ProductsController@update');
 Route::get('showProduct/{id}','ProductsController@show');
