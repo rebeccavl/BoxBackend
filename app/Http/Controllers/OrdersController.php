@@ -112,6 +112,7 @@ class OrdersController extends Controller
     $order->quantity = $request->input("quantity");
     $order->totalPrice=$request->input("amount")*$products->price;
     $order->comments=$request->input("comments");
+    $order->catergories=$request->input("categories");
     $order->save();
 
     return Response::json(["success"=>"You're order is complete."]);
