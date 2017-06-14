@@ -125,4 +125,4 @@ public function store(Request $request)
 
       return Response::json(['success' => 'Deleted Article.']);
     }
-}
+ }

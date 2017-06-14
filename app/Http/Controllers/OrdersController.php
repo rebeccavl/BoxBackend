@@ -27,8 +27,7 @@ class OrdersController extends Controller
 
     $orders = Order::where("userID","=",$userID)
     ->join("users","orders.userID","=","user.id")
-    ->join("products","orders.productID","=","products.id")
-    ->select("orders.id","orders.amount","orders.totalPrice","user.name","products.name")
+    ->select("orders.id","orders.amount","orders.totalPrice","user.name","orders.plan")
     ->orderBy("orders.id","desc")
     -get();
 
@@ -39,10 +38,13 @@ class OrdersController extends Controller
   public function store(Request $request)
   {
     $rules=[
-      "productsID" => "required",
-      "quantity" => "required",
-      "totalPrice" => "required",
-      "availability" => "required"
+      "categories" => "required",
+      "plan" => "required",
+      "firstName" => "required",
+      "lastName" => "required",
+      "email" => "required",
+      "streetAddress" => "required",
+      "phoneNumber" => "required",
     ];
 
     $validator = Validator::make(Purifier::clean($request->all()),$rules);
@@ -51,26 +53,14 @@ class OrdersController extends Controller
       return Response::json(["error" => "Please fill out all fields"]);
     }
 
-
-    $products = Product::find($request->input('productsID'));
-
-    if(empty($products))
-    {
-      return Response::json(["error" => "Product not found."]);
-    }
-
-    if($products->availability==0)
-    {
-      return Response::json(["error"=>"Product is temporarily unavailable"]);
-    }
-
-
-    $order = new Order;
-    $order->userID = Auth::user()->id;
-    $order->productsID = $request->input("productsID");
-    $order->quantity = $request->input("quantity");
-    $order->totalPrice=$request->input("amount")*$products->price;
-    $order->comments=$request->input("comments");
+    $order = Order::find($id);
+    $order->categories=$request->input("categories");
+    $order->plan=$request->input("plan");
+    $order->firstName->input("firstName");
+    $order->lastName->input("lastName");
+    $order->email->input("email");
+    $order->streetAddress->input("streetAddress");
+    $oder->phoneNumber->input("phoneNumber");
     $order->save();
 
     return Response::json(["success"=>"You're order is complete."]);
@@ -80,10 +70,13 @@ class OrdersController extends Controller
   public function update(Request $request)
   {
     $rules=[
-      "productsID" => "required",
-      "quantity" => "required",
-      "totalPrice" => "required",
-      "availability" => "required"
+      "categories" => "required",
+      "plan" => "required",
+      "firstName" => "required",
+      "lastName" => "required",
+      "email" => "required",
+      "streetAddress" => "required",
+      "phoneNumber" => "required",
     ];
 
     $validator = Validator::make(Purifier::clean($request->all()),$rules);
@@ -92,27 +85,14 @@ class OrdersController extends Controller
       return Response::json(["error" => "Please fill out all fields"]);
     }
 
-
-    $products = Product::find($request->input('productsID'));
-
-    if(empty($products))
-    {
-      return Response::json(["error" => "Product not found."]);
-    }
-
-    if($products->availability==0)
-    {
-      return Response::json(["error"=>"Product is temporarily unavailable"]);
-    }
-
-
     $order = Order::find($id);
-    $order->userID = Auth::user()->id;
-    $order->productsID = $request->input("productsID");
-    $order->quantity = $request->input("quantity");
-    $order->totalPrice=$request->input("amount")*$products->price;
-    $order->comments=$request->input("comments");
-    $order->catergories=$request->input("categories");
+    $order->categories=$request->input("categories");
+    $order->plan=$request->input("plan");
+    $order->firstName->input("firstName");
+    $order->lastName->input("lastName");
+    $order->email->input("email");
+    $order->streetAddress->input("streetAddress");
+    $oder->phoneNumber->input("phoneNumber");
     $order->save();
 
     return Response::json(["success"=>"You're order is complete."]);
@@ -141,5 +121,13 @@ class OrdersController extends Controller
     $order->delete();
 
     return Response::json(['success' => 'Order Cancelled.']);
+  }
+
+  public function getCategories()
+  {
+    $user = Auth::user();
+    $categories=Order::where('userID','=',$user->id)->select('id','categories')->first();
+    $array = explode(',',$categories->categories);
+    return Response::json($array);
   }
 }
