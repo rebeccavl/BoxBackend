@@ -12,12 +12,13 @@ use App\Product;
 use Response;
 use File;
 use Auth;
+use App\User;
 
 class OrdersController extends Controller
 {
   public function __construct()
     {
-      $this->middleware('jwt.auth',['only'=>['store','update','destroy']]);
+      $this->middleware('jwt.auth',['only'=>['update','destroy','getCategories']]);
     }
 
   public function index()
@@ -42,7 +43,7 @@ class OrdersController extends Controller
       "plan" => "required",
       "firstName" => "required",
       "lastName" => "required",
-      "email" => "required",
+      "accountEmail" => "required",
       "streetAddress" => "required",
       "phoneNumber" => "required",
     ];
@@ -53,28 +54,57 @@ class OrdersController extends Controller
       return Response::json(["error" => "Please fill out all fields"]);
     }
 
-    $order = Order::find($id);
-    $order->categories=$request->input("categories");
-    $order->plan=$request->input("plan");
-    $order->firstName->input("firstName");
-    $order->lastName->input("lastName");
-    $order->email->input("email");
-    $order->streetAddress->input("streetAddress");
-    $oder->phoneNumber->input("phoneNumber");
-    $order->save();
+    $user = User::where("email","=",$request->input('accountEmail'))->first();
+    if(empty($user))
+    {
+      if(strlen($request->input("accountEmail"))>32)
+      {
+        return Response::json(["error"=>"Your email is too long. "]);
+      }
 
-    return Response::json(["success"=>"You're order is complete."]);
+      if(strlen($request->input("passwordSignUp"))<8)
+      {
+        return Response::json(["error"=>"Your password must be at least 8 characters"]);
+      }
+
+      $user = new User;
+      $user->name = $request->input('firstName');
+      $user->email = $request->input('accountEmail');
+      $user->password = Hash::make($request->input('passwordSignUp'));
+      $user->roleID = 2;
+      $user->save();
+    }
+
+    $order = Order::where('userID','=',$user->id)->first();
+    if(empty($order))
+    {
+      $order = new Order;
+      $order->userID=$user->id;
+      $order->categories=$request->input("categories");
+      $order->plan=$request->input("plan");
+      $order->firstName=$request->input("firstName");
+      $order->lastName=$request->input("lastName");
+      $order->email=$request->input("accountEmail");
+      $order->streetAddress=$request->input("streetAddress");
+      $order->phoneNumber=$request->input("phoneNumber");
+      $order->save();
+
+      return Response::json(["success"=>"You're order is complete."]);
+    }
+    else {
+      return Response::json(["error"=>"You already have an account"]);
+    }
   }
 
 
-  public function update(Request $request)
+  public function update(Request $request,$id)
   {
     $rules=[
       "categories" => "required",
       "plan" => "required",
       "firstName" => "required",
       "lastName" => "required",
-      "email" => "required",
+      "accountEmail" => "required",
       "streetAddress" => "required",
       "phoneNumber" => "required",
     ];
@@ -88,14 +118,14 @@ class OrdersController extends Controller
     $order = Order::find($id);
     $order->categories=$request->input("categories");
     $order->plan=$request->input("plan");
-    $order->firstName->input("firstName");
-    $order->lastName->input("lastName");
-    $order->email->input("email");
-    $order->streetAddress->input("streetAddress");
-    $oder->phoneNumber->input("phoneNumber");
+    $order->firstName=$request->input("firstName");
+    $order->lastName=$request->input("lastName");
+    $order->email=$request->input("accountEmail");
+    $order->streetAddress-$request->input("streetAddress");
+    $order->phoneNumber=$request->input("phoneNumber");
     $order->save();
 
-    return Response::json(["success"=>"You're order is complete."]);
+    return Response::json(["success"=>"You complete me."]);
   }
 
 
@@ -126,8 +156,9 @@ class OrdersController extends Controller
   public function getCategories()
   {
     $user = Auth::user();
-    $categories=Order::where('userID','=',$user->id)->select('id','categories')->first();
-    $array = explode(',',$categories->categories);
-    return Response::json($array);
+    $order=Order::where('userID','=',$user->id)->first();
+    $categories = explode(',',$order->categories);
+    $plans = explode(',',$order->plan);
+    return Response::json(['categories'=>$categories,'plans'=>$plans,'user'=>$order]);
   }
 }

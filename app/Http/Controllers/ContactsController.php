@@ -30,7 +30,7 @@ class ContactsController extends Controller
         return Response::json(["error" => "You need to fill out all fields."]);
       }
       $name = $request->input("name");
-      $email = $request->input("email");
+      $email = $request->input("contactEmail");
       $number = $request->input("number");
       $message = $request->input("message");
       Mail::send('emails.contact', array(
@@ -38,7 +38,7 @@ class ContactsController extends Controller
         'contactEmail' => $email,
         'number' => $number,
         'message' => $message
-      ), function($name, $email, $number, $website, $message)
+      ), function($name, $contactEmail, $number, $message)
       {
         $message->to('cb.the.iii@gmail.com', 'Charlie Bradley')->subject('New Potential Client');
       });

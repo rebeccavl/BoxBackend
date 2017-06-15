@@ -15,8 +15,6 @@ class Subscribers extends Migration
     {
         Schema::create('subscribers',function (Blueprint $table) {
           $table->increments('id');
-          $table->string('firstName');
-          $table->string('lastName');
           $table->string('email')->unique();
           $table->boolean('unsubscribe')->default(1);
           $table->timestamps();

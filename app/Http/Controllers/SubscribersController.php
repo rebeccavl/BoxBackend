@@ -35,8 +35,6 @@ class SubscribersController extends Controller
     public function store(Request $request)
     {
       $rules=[
-        "firstName" => 'required',
-        "lastName" => 'required',
         "email" => 'required',
       ];
 
@@ -49,14 +47,11 @@ class SubscribersController extends Controller
 
 
       $subscribers = new Subscriber;
-
-      $subscribers->firstName = $request->input('firstName');
-      $subscribers->lastName = $request->input('lastName');
       $subscribers->email = $request->input('email');
       $subscribers->unsubscribe = 1;
       $subscribers->save();
 
-      return Response::json(["succes" => "Thanks for joining our email force!"]);
+      return Response::json(["success" => "Thanks for joining our email force!"]);
     }
 
     public function destroy($id)
