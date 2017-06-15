@@ -21,7 +21,10 @@ Route::get('getCategories/{id}','OrdersController@getCategories');
 //Route::post('storeProduct','ProductsController@store');
 //Route::post('updateProduct/{id}','ProductsController@update');
 //Route::get('showProduct/{id}','ProductsController@show');
-//Route::post('deleteProduct/{id}','ProductsController@destroy');
+//Route::post('deleteProduct/{id}','ProductsController@destroy');\
+Route::get('getContacts','ContactsController@index');
+Route::post('storeContacts','ContactsController@store');
+Route::get('showContacts','ContactsController@show');
 
 Route::get('getSubscribers','SubscribersController@index');
 Route::post('storeSubscribers','SubscribersController@store');
